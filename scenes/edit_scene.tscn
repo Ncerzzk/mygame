@@ -1,0 +1,126 @@
+[gd_scene load_steps=9 format=3 uid="uid://lqr354rnt812"]
+
+[ext_resource type="PackedScene" uid="uid://ddgvvri2eh06l" path="res://cars/basic_balance_car.tscn" id="1_7g8v0"]
+[ext_resource type="Script" path="res://scenes/edit_scene.gd" id="1_glbye"]
+[ext_resource type="PackedScene" uid="uid://doodb0cfimk2i" path="res://cars/bat.tscn" id="2_rkelt"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2ny8d"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_8slea"]
+sky_material = SubResource("ProceduralSkyMaterial_2ny8d")
+
+[sub_resource type="Environment" id="Environment_rfqeu"]
+background_mode = 2
+sky = SubResource("Sky_8slea")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_07n5m"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_duppo"]
+points = PackedVector3Array(1.01587, 0.015873, 1.01587, -1.01587, -0.015873, -1.01587, -1.01587, 0.015873, -1.01587, 1.01587, -0.015873, -1.01587, -1.01587, -0.015873, 1.01587, -1.01587, 0.015873, 1.01587, 1.01587, 0.015873, -1.01587, 1.01587, -0.015873, 1.01587)
+
+[node name="edit_scene" type="Node3D"]
+script = ExtResource("1_glbye")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_rfqeu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+mesh = SubResource("PlaneMesh_07n5m")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_duppo")
+
+[node name="Bat" parent="." instance=ExtResource("2_rkelt")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.415137, 0.716935, -0.177411)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.716935, 1.57518)
+
+[node name="basic_balance_car" parent="." instance=ExtResource("1_7g8v0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.975561, 0)
+center_of_mass = Vector3(0, 0, 0)
+freeze = true
+angular_damp_mode = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BoxContainer" type="BoxContainer" parent="Control"]
+layout_mode = 0
+offset_top = 600.0
+offset_right = 40.0
+offset_bottom = 640.0
+
+[node name="Button_bat" type="Button" parent="Control/BoxContainer"]
+layout_mode = 2
+text = "电池"
+
+[node name="Button_imu" type="Button" parent="Control/BoxContainer"]
+layout_mode = 2
+text = "IMU"
+
+[node name="Button_camera_with_rod" type="Button" parent="Control/BoxContainer"]
+layout_mode = 2
+text = "线性CCD"
+
+[node name="GridContainer" type="GridContainer" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="Control/GridContainer"]
+layout_mode = 2
+text = "翻转"
+
+[node name="CheckBox_show_center_of_mass" type="CheckBox" parent="Control/GridContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "显示质心"
+
+[node name="CheckBox_enable_gravity" type="CheckBox" parent="Control/GridContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "施加重力
+"
+
+[node name="Button_reset" type="Button" parent="Control/GridContainer"]
+layout_mode = 2
+text = "重置"
+
+[node name="Button_rotate_x" type="Button" parent="Control/GridContainer"]
+layout_mode = 2
+text = "绕X轴旋转"
+
+[node name="Button_rotate_y" type="Button" parent="Control/GridContainer"]
+layout_mode = 2
+text = "绕Y轴旋转"
+
+[node name="Button_rotate_z" type="Button" parent="Control/GridContainer"]
+layout_mode = 2
+text = "绕z轴旋转"
+
+[connection signal="pressed" from="Control/BoxContainer/Button_bat" to="." method="_on_button_obj_pressed" binds= [&"bat"]]
+[connection signal="pressed" from="Control/BoxContainer/Button_imu" to="." method="_on_button_obj_pressed" binds= [&"imu"]]
+[connection signal="pressed" from="Control/BoxContainer/Button_camera_with_rod" to="." method="_on_button_obj_pressed" binds= [&"ccd"]]
+[connection signal="pressed" from="Control/GridContainer/Button" to="." method="_on_toggle_pressed"]
+[connection signal="toggled" from="Control/GridContainer/CheckBox_show_center_of_mass" to="." method="_on_check_box_show_center_of_mas_toggled"]
+[connection signal="toggled" from="Control/GridContainer/CheckBox_enable_gravity" to="." method="_on_check_box_enable_gravity_toggled"]
+[connection signal="pressed" from="Control/GridContainer/Button_reset" to="." method="_on_button_reset_pressed"]
+
+[editable path="basic_balance_car"]

@@ -1,0 +1,27 @@
+name: Code Lint
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.cs'
+
+jobs:
+  run-linters:
+    name: Source code linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint C# with auto fix
+        uses: wearerequired/lint-action@v2
+        with:
+          commit_message: "style(code): code style issues with ${linter}"
+          dotnet_format: true
+          dotnet_format_dir: src
+          dotnet_format_auto_fix: true
+          auto_fix: ${{ github.event_name == 'pull_request' }}
+          git_name: "C# linter"

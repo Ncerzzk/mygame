@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://ciph6jpli6pqr"]
+
+[ext_resource type="Script" path="res://cars/imu.gd" id="1_5pkms"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_l2ekx"]
+size = Vector3(0.03, 0.002, 0.03)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m5gom"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_daddy"]
+points = PackedVector3Array(-0.015, -0.001, -0.015, -0.015, 0.000999804, -0.015, 0.015, -0.001, -0.015, -0.015, -0.001, 0.015, -0.015, 0.000999804, 0.015, 0.015, 0.000999804, -0.015, 0.015, -0.001, 0.015, 0.015, 0.000999804, 0.015)
+
+[node name="IMU" type="Node3D"]
+script = ExtResource("1_5pkms")
+mass = 0.1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.003)
+mesh = SubResource("BoxMesh_l2ekx")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_m5gom")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.003)
+shape = SubResource("ConvexPolygonShape3D_daddy")
